@@ -52,7 +52,7 @@ async function generateLeaveTrackerExcel({ employees, leaves, weekStart, weekDay
       } else if (cell.value === 'EL') {
         cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFC7CE' } };
       } else if (cell.value === 'SL') {
-        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFFACD' } };
+        cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFFFFF00' } };
       }
     }
   }
