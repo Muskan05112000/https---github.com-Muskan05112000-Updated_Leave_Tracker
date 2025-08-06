@@ -115,13 +115,12 @@ function LeaveModal({ open, onClose, selectedDates, editingLeave, onSubmit, onRe
             <InputLabel>Type of Leave</InputLabel>
             <Select value={type} label="Type of Leave" onChange={e => setType(e.target.value)}>
               {leaveTypes.map(opt => {
-                // Disable Planned Leave if all selected dates are after the 7th of the month
                 let disablePlanned = false;
-                if (opt.value === 'Planned' && selectedDates && selectedDates.length > 0) {
-                  disablePlanned = selectedDates.every(dateStr => {
-                    const d = new Date(dateStr);
-                    return d.getDate() > 3;
-                  });
+                if (opt.value === 'Planned') {
+                  const today = new Date();
+                  if (today.getDate() > 7) {
+                    disablePlanned = true;
+                  }
                 }
                 return (
                   <MenuItem key={opt.value} value={opt.value} disabled={disablePlanned}>{opt.label}</MenuItem>

@@ -64,7 +64,7 @@ app.post('/api/employees', async (req, res) => {
 
 // --- Send Leave Email ---
 const { format, addDays, isSameDay } = require('date-fns');
-const { sendWeeklyLeaveSMS } = require('./sendSms');
+// const { sendWeeklyLeaveSMS } = require('./sendSms'); // WhatsApp/SMS integration disabled
 const { generateLeaveTrackerExcel } = require('./generateExcel');
 
 app.post('/api/download-leave-excel', async (req, res) => {
@@ -88,18 +88,18 @@ app.post('/api/download-leave-excel', async (req, res) => {
   }
 });
 
-app.post('/api/send-leave-sms', async (req, res) => {
-  const { phone, employees, leaves, weekStart } = req.body;
-  if (!phone || !employees || !leaves || !weekStart) {
-    return res.status(400).json({ error: 'Missing phone, employees, leaves, or weekStart' });
-  }
-  try {
-    await sendWeeklyLeaveSMS({ phone, employees, leaves, weekStart });
-    res.json({ success: true });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
+// app.post('/api/send-leave-sms', async (req, res) => {
+//   const { phone, employees, leaves, weekStart } = req.body;
+//   if (!phone || !employees || !leaves || !weekStart) {
+//     return res.status(400).json({ error: 'Missing phone, employees, leaves, or weekStart' });
+//   }
+//   try {
+//     await sendWeeklyLeaveSMS({ phone, employees, leaves, weekStart });
+//     res.json({ success: true });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// });
 
 app.post('/api/send-leave-email', async (req, res) => {
   console.log('Received send-leave-email body:', req.body);
