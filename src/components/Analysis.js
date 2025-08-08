@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import * as XLSX from 'xlsx';
 import { Box, Button, Paper, Dialog, DialogTitle, DialogContent, DialogActions, TextField, Snackbar, Alert } from "@mui/material";
+import SendMailDialog from "./SendMailDialog";
 import AnalysisCharts from "./AnalysisCharts";
 import AnalysisTable from "./AnalysisTable";
 import DonutChartOnly from "./DonutChartOnly";
@@ -164,95 +165,65 @@ const Analysis = () => {
           <Button onClick={handleDownloadExcel} variant="contained">Download</Button>
         </DialogActions>
       </Dialog>
-      {/* Top Bar */}
-      <Box display="flex" justifyContent="space-between" alignItems="center" mt={3} mb={4} px={2}>
-        <h2 style={{ margin: 0, fontWeight: 800, fontSize: 38, textAlign: 'left', letterSpacing: 1 }}>Analysis</h2>
+      
+      {/* Send Mail Dialog */}
+      <SendMailDialog
+        open={sendMailOpen}
+        onClose={() => setSendMailOpen(false)}
+        onSend={handleSendMail}
+        mailTo={mailTo}
+        setMailTo={setMailTo}
+        mailAppPassword={mailAppPassword}
+        setMailAppPassword={setMailAppPassword}
+        mailError={mailError}
+        mailAppPasswordError={mailAppPasswordError}
+      />
+
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 32, width: '100%' }}>
+        <span style={{
+          display: 'block',
+          fontWeight: 900,
+          fontSize: 38,
+          letterSpacing: 1,
+          background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textShadow: '0 2px 12px #b388ff22, 0 1px 1px #fff',
+          fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+          lineHeight: 1.1,
+          margin: '28px 0 30px 0',
+          textAlign: 'left',
+        }}>
+          Analysis
+        </span>
         <Box display="flex" columnGap={3} alignItems="center">
           <Button
             variant="contained"
-            sx={{
-              borderRadius: 99,
-              background: 'linear-gradient(90deg, #1976d2 0%, #42a5f5 100%)',
-              color: '#fff',
-              px: 3,
-              py: 1.5,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              boxShadow: 3,
-              fontWeight: 600,
-              fontSize: 17,
-              transition: 'background 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                background: 'linear-gradient(90deg, #1565c0 0%, #1976d2 100%)',
-                boxShadow: 6,
-              }
-            }}
+            sx={{ bgcolor: '#1976d2', color: '#fff', fontWeight: 700, fontSize: 18, px: 4, py: 1.5, borderRadius: 4, boxShadow: 2, textTransform: 'none', letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 1 }}
             onClick={() => setSendMailOpen(true)}
+            startIcon={<span style={{ display: 'flex', alignItems: 'center', marginRight: 8 }}><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#fff" d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg></span>}
           >
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 24 24" width="22" style={{ marginRight: 6 }}><path d="M0 0h24v24H0z" fill="none"/><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
-            </span>
             Send a Mail
           </Button>
+          <Button
+            variant="contained"
+            sx={{ bgcolor: '#7c4dff', color: '#fff', fontWeight: 700, fontSize: 18, px: 4, py: 1.5, borderRadius: 4, boxShadow: 2, textTransform: 'none', letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 1 }}
+            onClick={() => setSendSmsOpen(true)}
+            startIcon={<span style={{ display: 'flex', alignItems: 'center', marginRight: 8 }}><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#fff" d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H6v-2h12v2zm0-4H6V8h12v4z"/></svg></span>}
+          >
+            Send a SMS
+          </Button>
+          <Button
+            variant="contained"
+            sx={{ bgcolor: '#00c853', color: '#fff', fontWeight: 700, fontSize: 18, px: 4, py: 1.5, borderRadius: 4, boxShadow: 2, textTransform: 'none', letterSpacing: 0.3, display: 'flex', alignItems: 'center', gap: 1 }}
+            onClick={handleDownloadExcel}
+            startIcon={<span style={{ display: 'flex', alignItems: 'center', marginRight: 8 }}><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24"><path fill="#fff" d="M5 20h14v-2H5v2zM7 4h10v2H7V4zm5 4c-1.1 0-2 .9-2 2v6h2v-6h2v6h2v-6c0-1.1-.9-2-2-2z"/></svg></span>}
+          >
+            Download Excel
+          </Button>
 
-          {/* Send Mail Modal */}
-          <Dialog open={sendMailOpen} onClose={() => setSendMailOpen(false)} maxWidth="xs" fullWidth>
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
-              Send Mail
-              <Button onClick={() => setSendMailOpen(false)} sx={{ minWidth: 0, p: 0, color: '#666' }}>
-                <span style={{ fontSize: 24, fontWeight: 700 }}>&times;</span>
-              </Button>
-            </DialogTitle>
-            <DialogContent dividers>
-              <TextField
-                label="Email"
-                type="email"
-                value={mailTo}
-                onChange={e => {
-                  setMailTo(e.target.value);
-                  setMailError(false);
-                }}
-                fullWidth
-                sx={{ mb: 2 }}
-                placeholder="recipient@example.com"
-                autoFocus
-                error={mailError}
-                helperText={mailError ? 'Enter a valid email address' : ''}
-              />
-              <TextField
-                label="App Password"
-                type="password"
-                value={mailAppPassword}
-                onChange={e => {
-                  setMailAppPassword(e.target.value);
-                  setMailAppPasswordError(false);
-                }}
-                fullWidth
-                sx={{ mb: 2 }}
-                placeholder="Your Gmail App Password"
-                error={mailAppPasswordError}
-                helperText={mailAppPasswordError ? 'App Password is required' : ''}
-              />
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => {
-                setSendMailOpen(false);
-                setMailTo("");
-                setMailAppPassword("");
-                setMailError(false);
-                setMailAppPasswordError(false);
-              }} variant="outlined">Cancel</Button>
-              <Button
-                onClick={handleSendMail}
-                variant="contained"
-                disabled={!mailTo || mailError || !mailAppPassword || mailAppPasswordError}
-                sx={{ fontWeight: 700 }}
-              >
-                Send
-              </Button>
-            </DialogActions>
-          </Dialog>
+
+
           <Snackbar
             open={mailSuccess}
             autoHideDuration={2500}
@@ -263,42 +234,50 @@ const Analysis = () => {
               Mail Sent Successfully
             </Alert>
           </Snackbar>
-          <Button
-            variant="contained"
-            sx={{
-              borderRadius: 99,
-              background: 'linear-gradient(90deg, #43ea6d 0%, #1de982 100%)',
-              color: '#fff',
-              px: 3,
-              py: 1.5,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              boxShadow: 3,
-              fontWeight: 600,
-              fontSize: 17,
-              transition: 'background 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                background: 'linear-gradient(90deg, #1fa463 0%, #43ea6d 100%)',
-                boxShadow: 6,
+          {/* Send SMS Modal */}
+          <Dialog open={sendSmsOpen} onClose={() => setSendSmsOpen(false)} maxWidth="xs" fullWidth
+            PaperProps={{
+              style: {
+                background: 'rgba(255,255,255,0.98)',
+                borderRadius: 32,
+                boxShadow: '0 10px 40px 0 rgba(124,77,255,0.20)',
+                padding: 0,
+                fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+              },
+              elevation: 0
+            }}
+            BackdropProps={{
+              style: {
+                background: 'rgba(124,77,255,0.03)'
               }
             }}
-            onClick={() => setSendSmsOpen(true)}
           >
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 24 24" width="22" style={{ marginRight: 6 }}><path d="M0 0h24v24H0z" fill="none"/><path d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H6v-2h12v2zm0-4H6V8h12v4z"/></svg>
-            </span>
-            Send a SMS
-          </Button>
-          {/* Send SMS Modal */}
-          <Dialog open={sendSmsOpen} onClose={() => setSendSmsOpen(false)} maxWidth="xs" fullWidth>
-            <DialogTitle sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', pr: 1 }}>
+            <DialogTitle sx={{
+              textAlign: 'center',
+              fontWeight: 900,
+              fontSize: 30,
+              color: '#7c4dff',
+              letterSpacing: 1,
+              fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+              background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              textShadow: '0 2px 12px #b388ff33',
+              borderTopLeftRadius: 18,
+              borderTopRightRadius: 18,
+              py: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: 1.5
+            }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', marginRight: 10 }}>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24"><path fill="#7c4dff" d="M20 2H4c-1.1 0-2 .9-2 2v16c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-2 14H6v-2h12v2zm0-4H6V8h12v4z"/></svg>
+              </span>
               Send SMS
-              <Button onClick={() => setSendSmsOpen(false)} sx={{ minWidth: 0, p: 0, color: '#666' }}>
-                <span style={{ fontSize: 24, fontWeight: 700 }}>&times;</span>
-              </Button>
             </DialogTitle>
-            <DialogContent dividers>
+
+            <DialogContent dividers sx={{ px: 4, py: 2 }}>
               <TextField
                 label="Phone Number"
                 type="tel"
@@ -308,19 +287,52 @@ const Analysis = () => {
                   setSmsPhoneError(false);
                 }}
                 fullWidth
-                sx={{ mb: 2 }}
-                placeholder="Enter mobile number"
-                autoFocus
+                variant="outlined"
+                sx={{ mt: 2, mb: 2, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+                  '& .MuiOutlinedInput-root': {
+                    borderRadius: 16,
+                    background: 'rgba(255,255,255,0.58)',
+                    boxShadow: '0 2px 16px 0 rgba(124,77,255,0.11) inset',
+                    border: '2px solid #a084e8',
+                    outline: 'none',
+                    fontWeight: 700,
+                    fontSize: 19,
+                    color: '#4b2aad',
+                    transition: 'background 0.18s, box-shadow 0.18s',
+                    '&:hover': { background: 'rgba(255,255,255,0.70)', border: '2px solid #a084e8', outline: 'none', boxShadow: 'none' },
+                    '&.Mui-focused': { background: 'rgba(255,255,255,0.90)', border: '2px solid #7c4dff', outline: 'none', boxShadow: 'none' }
+                  },
+                  '& .MuiInputLabel-root': { fontWeight: 800, color: '#7c4dff', fontSize: 18 }
+                }}
+                placeholder="Enter phone number"
                 error={smsPhoneError}
                 helperText={smsPhoneError ? 'Enter a valid phone number' : ''}
+                InputLabelProps={{ shrink: true, style: { fontWeight: 800, color: '#7c4dff', fontSize: 18 } }}
+                InputProps={{ style: { marginTop: 12 } }}
               />
             </DialogContent>
-            <DialogActions>
+            <DialogActions style={{ justifyContent: 'center', gap: 24, padding: '0 28px 32px 28px', marginTop: 8 }}>
               <Button onClick={() => {
                 setSendSmsOpen(false);
                 setSmsPhone("");
                 setSmsPhoneError(false);
-              }} variant="outlined">Cancel</Button>
+              }} variant="outlined" sx={{
+                borderRadius: 10,
+                fontWeight: 700,
+                px: 4,
+                py: 1.2,
+                fontSize: 17,
+                boxShadow: 2,
+                background: 'linear-gradient(90deg, #fff 0%, #ede7f6 100%)',
+                border: '2px solid #b39ddb',
+                color: '#7c4dff',
+                fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+                transition: 'background 0.18s, border-color 0.18s, color 0.18s',
+                '&:hover': { background: '#ede7f6', borderColor: '#7c4dff', color: '#5e35b1' },
+                '&:active': { background: '#d1c4e9', borderColor: '#7c4dff', color: '#5e35b1' }
+              }}>
+                CANCEL
+              </Button>
               <Button
                 onClick={() => {
                   const phone = smsPhone.trim();
@@ -357,9 +369,22 @@ const Analysis = () => {
                 }}
                 variant="contained"
                 disabled={!smsPhone || smsPhoneError}
-                sx={{ fontWeight: 700 }}
+                sx={{
+                  borderRadius: 10,
+                  fontWeight: 800,
+                  px: 4,
+                  py: 1.2,
+                  fontSize: 17,
+                  boxShadow: 2,
+                  background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+                  color: '#fff',
+                  fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+                  transition: 'background 0.18s, box-shadow 0.18s, transform 0.16s',
+                  '&:hover': { background: 'linear-gradient(90deg, #b388ff 0%, #7c4dff 100%)', boxShadow: '0 4px 16px 0 #b388ff66', transform: 'scale(1.07)' },
+                  '&:active': { boxShadow: '0 2px 8px 0 #7c4dff44', transform: 'scale(0.97)' }
+                }}
               >
-                Submit
+                SUBMIT
               </Button>
             </DialogActions>
           </Dialog>
@@ -373,40 +398,14 @@ const Analysis = () => {
               SMS Sent Successfully
             </Alert>
           </Snackbar>
-          <Button
-            variant="contained"
-            sx={{
-              borderRadius: 99,
-              background: 'linear-gradient(90deg, #43ea6d 0%, #1de982 100%)',
-              color: '#fff',
-              px: 3,
-              py: 1.5,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1,
-              boxShadow: 3,
-              fontWeight: 600,
-              fontSize: 17,
-              transition: 'background 0.2s, box-shadow 0.2s',
-              '&:hover': {
-                background: 'linear-gradient(90deg, #1fa463 0%, #43ea6d 100%)',
-                boxShadow: 6,
-              }
-            }}
-            onClick={() => setExcelModalOpen(true) }
-          >
-            <span style={{ display: 'flex', alignItems: 'center' }}>
-              <svg xmlns="http://www.w3.org/2000/svg" height="22" viewBox="0 0 24 24" width="22" style={{ marginRight: 6 }}><path d="M0 0h24v24H0z" fill="none"/><path d="M19 9h-4V3H5v6H3v12h18V9z"/></svg>
-            </span>
-            Download Excel
-          </Button>
+
         </Box>
-      </Box>
+      </div>
 
       {/* Main Content Grid */}
-      <Box display={{ xs: 'block', md: 'flex' }} gap={4}>
+      <Box display={{ xs: 'block', md: 'flex' }} gap={4} sx={{ ml: '15px' }}>
         {/* Left Column */}
-        <Box flex={1} minWidth={320} display="flex" flexDirection="column" gap={4}>
+        <Box flex={1} minWidth={320} display="flex" flexDirection="column" gap={4} >
           <Paper elevation={2} sx={{ p: 3, mb: 2 }}>
             {/* Donut Chart Only (no line/bar) */}
             <DonutChartOnly month={month} year={year} />

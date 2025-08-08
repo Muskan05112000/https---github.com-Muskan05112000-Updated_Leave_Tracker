@@ -11,9 +11,11 @@ app.use((req, res, next) => {
   next();
 });
 const { sendWeeklyLeaveMail } = require('./sendMail');
+const authRouter = require('./auth');
 
 app.use(cors());
 app.use(express.json());
+app.use('/api', authRouter);
 
 // --- MongoDB Atlas Connection ---
 const MONGO_URI = 'mongodb+srv://Admin:Admin@cluster0.ge3ezsi.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0';
@@ -25,7 +27,7 @@ mongoose.connect(MONGO_URI, {
 
 // --- Schemas ---
 const employeeSchema = new mongoose.Schema({
-  name: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
   location: String,
   team: String
 });
@@ -52,10 +54,23 @@ app.get('/api/employees', async (req, res) => {
   res.json(employees);
 });
 
+const User = require('./models/User');
+const bcrypt = require('bcryptjs');
+
 app.post('/api/employees', async (req, res) => {
   try {
     const newEmp = new Employee(req.body);
     await newEmp.save();
+    // Also create a User credential for this employee
+    const hashedPassword = await bcrypt.hash('Welcome@123', 10);
+    let baseUsername = newEmp.name;
+    let username = baseUsername;
+    let count = 1;
+    while (await User.findOne({ username })) {
+      username = baseUsername + count;
+      count++;
+    }
+    await User.create({ username, password: hashedPassword, role: 'Employee' });
     res.status(201).json(newEmp);
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -159,6 +174,8 @@ app.put('/api/employees/:name', async (req, res) => {
 
 app.delete('/api/employees/:name', async (req, res) => {
   await Employee.deleteOne({ name: req.params.name });
+  // Also delete the credential for this employee
+  await User.deleteOne({ username: req.params.name });
   res.status(204).end();
 });
 

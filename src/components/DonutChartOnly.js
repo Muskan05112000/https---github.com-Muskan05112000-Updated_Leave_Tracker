@@ -18,10 +18,23 @@ export default function DonutChartOnly({ month, year }) {
 
   return (
     <>
-      <Typography variant="h6" sx={{ fontWeight: 700, fontFamily: 'Inter, Roboto, Arial, sans-serif', mb: 1, textAlign: 'center' }}>
+      <Typography
+        sx={{
+          fontWeight: 900,
+          fontSize: '2.2rem',
+          fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+          background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+          WebkitBackgroundClip: 'text',
+          WebkitTextFillColor: 'transparent',
+          textAlign: 'center',
+          letterSpacing: 1,
+          textShadow: '0 2px 12px #b388ff33',
+          mb: 2
+        }}
+      >
         Total Leaves - {format(new Date(year, month), "MMMM")}
       </Typography>
-      <ResponsiveContainer width="100%" height={340}>
+      <ResponsiveContainer width="100%" height={420}>
         <PieChart>
           <Pie
             data={donutData}
@@ -29,8 +42,8 @@ export default function DonutChartOnly({ month, year }) {
             nameKey="name"
             cx="50%"
             cy="50%"
-            innerRadius={80}
-            outerRadius={120}
+            innerRadius={110}
+            outerRadius={155}
             isAnimationActive={false}
           >
             {donutData.map((entry, idx) => (
@@ -43,15 +56,38 @@ export default function DonutChartOnly({ month, year }) {
             y="48%"
             textAnchor="middle"
             dominantBaseline="middle"
-            fontFamily="'Inter', 'Roboto', 'Arial', sans-serif"
-            fontSize="15"
-            fontWeight="600"
+            fontFamily="Poppins, Inter, Segoe UI, Arial, sans-serif"
+            fontSize="1.25rem"
+            fontWeight="800"
+            letterSpacing="0.5px"
+            style={{ textShadow: '0 1px 6px #b388ff22' }}
             fill="#222"
           >
             <tspan x="50%" dy="0">Total Leave Taken</tspan>
             <tspan x="50%" dy="1.5em" fontWeight="700" fontSize="24" fill="#1976d2">{monthLeaves.length}</tspan>
           </text>
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              fontFamily: 'Poppins, Inter, Arial, sans-serif',
+              fontSize: '1.08rem',
+              fontWeight: 700,
+              background: 'rgba(255, 255, 255, 0.95)',
+              borderRadius: 8,
+              boxShadow: '0 2px 12px rgba(0, 0, 0, 0.12)',
+              padding: '8px 16px',
+              color: '#333',
+            }}
+            labelStyle={{
+              fontWeight: 700,
+              fontSize: '1.08rem',
+              color: '#333',
+            }}
+            itemStyle={{
+              fontWeight: 700,
+              fontSize: '1.08rem',
+              color: '#333',
+            }}
+          />
         </PieChart>
       </ResponsiveContainer>
       <div style={{ marginTop: 20, textAlign: 'center', fontFamily: 'Inter, Roboto, Arial, sans-serif', fontSize: 18, fontWeight: 600 }}>

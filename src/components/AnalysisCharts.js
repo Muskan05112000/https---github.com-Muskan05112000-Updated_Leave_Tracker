@@ -74,7 +74,22 @@ function AnalysisCharts({ month, year, type, onViewDetails }) {
     };
     return (
       <Paper sx={{ p: 2 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 18, letterSpacing: 0.2, mb: 1 }}>Monthly Leave Counts ({year})</Typography>
+        <Typography
+          sx={{
+            fontWeight: 900,
+            fontSize: '2.1rem',
+            fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+            background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textAlign: 'center',
+            letterSpacing: 1,
+            textShadow: '0 2px 12px #b388ff33',
+            mb: 2
+          }}
+        >
+          Monthly Leave Counts ({year})
+        </Typography>
         <ResponsiveContainer width="100%" height={420}>
           <BarChart data={monthlyCounts} barGap={2}>
             <XAxis dataKey="month" tick={{ fontWeight: 600, fontSize: 14, fontFamily: 'Inter, Roboto, Arial, sans-serif' }} axisLine={{ stroke: '#bbb' }} tickLine={false} />
@@ -108,14 +123,29 @@ function AnalysisCharts({ month, year, type, onViewDetails }) {
     };
     return (
       <Paper sx={{ p: 2 }}>
-        <Typography variant="subtitle1" sx={{ fontWeight: 700, fontSize: 18, letterSpacing: 0.2, mb: 1 }}>Yearly Total Leaves</Typography>
+        <Typography
+          sx={{
+            fontWeight: 900,
+            fontSize: '2.1rem',
+            fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+            background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textAlign: 'center',
+            letterSpacing: 1,
+            textShadow: '0 2px 12px #b388ff33',
+            mb: 2
+          }}
+        >
+          Yearly Total Leaves
+        </Typography>
         <ResponsiveContainer width="100%" height={540}>
           <BarChart data={yearlyCounts} barGap={4}>
             <XAxis dataKey="year" tick={{ fontWeight: 600, fontSize: 15, fontFamily: 'Inter, Roboto, Arial, sans-serif' }} axisLine={{ stroke: '#bbb' }} tickLine={false} />
             <YAxis tick={{ fontWeight: 600, fontSize: 15, fontFamily: 'Inter, Roboto, Arial, sans-serif' }} axisLine={{ stroke: '#bbb' }} tickLine={false} />
             <Tooltip content={<CustomTooltipYear />} cursor={{ fill: 'rgba(66,165,245,0.07)' }} />
             <Legend iconType="circle" wrapperStyle={{ fontWeight: 600, fontSize: 15, fontFamily: 'Inter, Roboto, Arial, sans-serif' }} />
-            <Bar dataKey="Total" fill="#42a5f5" radius={[8, 8, 0, 0]} isAnimationActive />
+            <Bar dataKey="Total" fill="#7c4dff" radius={[8, 8, 0, 0]} isAnimationActive />
           </BarChart>
         </ResponsiveContainer>
       </Paper>

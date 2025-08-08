@@ -63,14 +63,29 @@ const ApplyLeave = () => {
   if (loading) return <Box ml={30} mt={10}><CircularProgress /></Box>;
 
   return (
-    <div style={{ minHeight: '100vh', background: '#fafbfc', padding: 0, overflowX: 'auto', whiteSpace: 'nowrap' }}>
-      {/* Sidebar is assumed to be rendered outside this component at width 220px */}
-      <div style={{ display: 'inline-block', minWidth: 700, paddingRight: 24 }}>
-        <div style={{ width: '100%', paddingTop: 24, paddingBottom: 8, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-          <h2 style={{ margin: 0, fontWeight: 700, fontSize: 32, textAlign: 'center' }}>Apply Leave</h2>
+    <>
+      <div style={{
+        minHeight: 'calc(100vh - 72px)',
+        height: 'calc(100vh - 72px)',
+        background: 'var(--primary-gradient)',
+        padding: 0,
+        marginLeft: 'var(--sidebar-width, 60px)',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        justifyContent: 'stretch',
+        fontFamily: 'Inter, Segoe UI, Roboto, Arial, sans-serif',
+        boxSizing: 'border-box',
+        width: '100%',
+        transition: 'margin-left 0.3s cubic-bezier(0.4,0,0.2,1)'
+      }}>
+        <div style={{ width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="page-heading fade-in" style={{ background: 'transparent', textAlign: 'center', margin: 0, marginBottom: 12 }}>Apply Leave</div>
         </div>
-        <div style={{ display: 'inline-block' }}>
+        <div className="fade-in" style={{ flex: 1, width: '100%', height: '100%', display: 'flex', alignItems: 'stretch', justifyContent: 'flex-start', margin: 0, padding: 0, background: 'transparent', boxShadow: 'none', borderRadius: 0 }}>
           <Calendar
+            className="table"
+
             month={month}
             year={year}
             holidays={holidays}
@@ -128,7 +143,7 @@ const ApplyLeave = () => {
           }
         }}
       />
-    </div>
+    </>
   );
 };
 

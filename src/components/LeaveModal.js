@@ -55,9 +55,27 @@ function LeaveModal({ open, onClose, selectedDates, editingLeave, onSubmit, onRe
   };
 
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>Apply Leave</DialogTitle>
-      <DialogContent>
+    <Dialog open={open} onClose={onClose} PaperProps={{
+      style: {
+        background: '#fff',
+        borderRadius: 18,
+        boxShadow: '0 8px 32px 0 rgba(124,77,255,0.18)',
+        border: '2px solid #ede7f6',
+        padding: 0
+      }
+    }}>
+      <DialogTitle style={{
+        background: 'linear-gradient(90deg, #b39ddb 0%, #ede7f6 100%)',
+        color: '#5e35b1',
+        fontWeight: 800,
+        fontSize: 24,
+        letterSpacing: 0.5,
+        textAlign: 'center',
+        borderTopLeftRadius: 16,
+        borderTopRightRadius: 16,
+        paddingBottom: 10
+      }}>Apply Leave</DialogTitle>
+      <DialogContent style={{ padding: 24, minWidth: 340 }}>
         <Box sx={{ minWidth: 250, mt: 1 }}>
           {/* Dropdown to select which leave to edit if multiple */}
           {leavesForDate.length > 1 && (
@@ -130,16 +148,32 @@ function LeaveModal({ open, onClose, selectedDates, editingLeave, onSubmit, onRe
           </FormControl>
         </Box>
       </DialogContent>
-      <DialogActions>
-        {/* Always show Submit */}
-        <Button onClick={handleSubmit} variant="contained" 
-          disabled={
-            // If only one leave for date, disable submit if user selects that employee (edit mode), otherwise enable if valid
-            (leavesForDate.length === 1 && employee === leavesForDate[0].employee) ||
-            !employee || employee === "none" || type === "None"
-          }
-        >Submit</Button>
-        {/* Show Edit and Revoke if any leaves exist for this date */}
+      <DialogActions style={{ justifyContent: 'flex-end', gap: 16, padding: '16px 24px 24px 24px' }}>
+        <Button
+          onClick={handleSubmit}
+          color="primary"
+          variant="contained"
+          disabled={!employee || employee === "none" || type === "None"}
+          sx={{
+            borderRadius: 8,
+            fontWeight: 800,
+            px: 4,
+            background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+            boxShadow: 3,
+            color: '#fff',
+            letterSpacing: 0.5,
+            textTransform: 'none',
+            fontSize: 17,
+            transition: 'background 0.18s, box-shadow 0.18s',
+            '&:hover': {
+              background: 'linear-gradient(90deg, #9575cd 0%, #7c4dff 100%)',
+              boxShadow: '0 2px 12px 0 rgba(124,77,255,0.18)'
+            },
+            '&:disabled': { background: '#ede7f6', color: '#b39ddb' }
+          }}
+        >
+          Apply
+        </Button>
         {leavesForDate && leavesForDate.length > 0 && (
           <>
             <Button
@@ -157,6 +191,23 @@ function LeaveModal({ open, onClose, selectedDates, editingLeave, onSubmit, onRe
               variant="contained"
               color="primary"
               disabled={!employee || !type || selectedLeaveId === "none"}
+              sx={{
+                borderRadius: 8,
+                fontWeight: 800,
+                px: 4,
+                background: 'linear-gradient(90deg, #7c4dff 0%, #b388ff 100%)',
+                boxShadow: 3,
+                color: '#fff',
+                letterSpacing: 0.5,
+                textTransform: 'none',
+                fontSize: 17,
+                transition: 'background 0.18s, box-shadow 0.18s',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #9575cd 0%, #7c4dff 100%)',
+                  boxShadow: '0 2px 12px 0 rgba(124,77,255,0.18)'
+                },
+                '&:disabled': { background: '#ede7f6', color: '#b39ddb' }
+              }}
             >
               Edit
             </Button>
@@ -170,12 +221,46 @@ function LeaveModal({ open, onClose, selectedDates, editingLeave, onSubmit, onRe
               variant="contained"
               color="error"
               disabled={!employee || !type || selectedLeaveId === "none"}
+              sx={{
+                borderRadius: 8,
+                fontWeight: 800,
+                px: 4,
+                background: 'linear-gradient(90deg, #ff5252 0%, #ff8a65 100%)',
+                boxShadow: 3,
+                color: '#fff',
+                letterSpacing: 0.5,
+                textTransform: 'none',
+                fontSize: 17,
+                transition: 'background 0.18s, box-shadow 0.18s',
+                '&:hover': {
+                  background: 'linear-gradient(90deg, #ff8a65 0%, #ff5252 100%)',
+                  boxShadow: '0 2px 12px 0 rgba(255,82,82,0.18)'
+                },
+                '&:disabled': { background: '#ffcdd2', color: '#b71c1c' }
+              }}
             >
               Revoke
             </Button>
           </>
         )}
-        <Button onClick={onClose} variant="outlined">Cancel</Button>
+        <Button
+          onClick={onClose}
+          color="secondary"
+          variant="outlined"
+          sx={{
+            borderRadius: 8,
+            fontWeight: 700,
+            px: 3,
+            boxShadow: 2,
+            background: '#fff',
+            border: '1.5px solid #b39ddb',
+            color: '#7c4dff',
+            transition: 'background 0.18s',
+            '&:hover': { background: '#ede7f6', borderColor: '#7c4dff', color: '#5e35b1' }
+          }}
+        >
+          Cancel
+        </Button>
       </DialogActions>
     </Dialog>
   );
