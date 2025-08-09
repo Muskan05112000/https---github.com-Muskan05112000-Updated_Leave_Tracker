@@ -23,7 +23,7 @@ export function AuthProvider({ children }) {
         return false;
       }
       const data = await res.json();
-      setUser({ username: data.username, role: data.role });
+      setUser({ associateId: data.associateId, role: data.role });
       setLoading(false);
       return true;
     } catch (err) {

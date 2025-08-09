@@ -3,13 +3,13 @@ import { useAuth } from '../context/AuthContext';
 
 const Login = ({ loggedOut }) => {
   const { login, loading, error } = useAuth();
-  const [username, setUsername] = useState('');
+  const [associateId, setAssociateId] = useState('');
   const [password, setPassword] = useState('');
   const [success, setSuccess] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const ok = await login(username, password);
+    const ok = await login(associateId, password);
     setSuccess(ok);
   };
 
@@ -35,11 +35,11 @@ const Login = ({ loggedOut }) => {
         <h2 style={{ textAlign: 'center', fontFamily: 'Inter, Segoe UI, Roboto, Arial, sans-serif', fontWeight: 800, fontSize: 26, margin: 0 }}>Leave Apply/Tracker Login</h2>
         <input
           type="text"
-          placeholder="Username"
-          value={username}
-          onChange={e => setUsername(e.target.value)}
-          required
+          value={associateId}
+          onChange={e => setAssociateId(e.target.value)}
+          placeholder="Associate ID"
           style={{ fontSize: 17, borderRadius: 8, border: '1.5px solid #b39ddb', padding: '10px 18px', fontFamily: 'Inter, Roboto, Segoe UI, Arial, sans-serif' }}
+          required
         />
         <input
           type="password"

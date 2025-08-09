@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 
+
 const app = express();
 const PORT = 4000;
 
@@ -26,12 +27,13 @@ mongoose.connect(MONGO_URI, {
   .catch((err) => console.error('MongoDB connection error:', err));
 
 // --- Schemas ---
-const employeeSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  location: String,
-  team: String
-});
-const Employee = mongoose.model('Employee', employeeSchema);
+//const employeeSchema = new mongoose.Schema({
+  //name: { type: String, required: true },
+  //location: String,
+  //team: String
+//});
+//const Employee = mongoose.model('Employee', employeeSchema);
+const Employee = require('./models/Employee');
 
 const holidaySchema = new mongoose.Schema({
   occasion: String,
@@ -59,20 +61,34 @@ const bcrypt = require('bcryptjs');
 
 app.post('/api/employees', async (req, res) => {
   try {
-    const newEmp = new Employee(req.body);
-    await newEmp.save();
-    // Also create a User credential for this employee
-    const hashedPassword = await bcrypt.hash('Welcome@123', 10);
-    let baseUsername = newEmp.name;
-    let username = baseUsername;
-    let count = 1;
-    while (await User.findOne({ username })) {
-      username = baseUsername + count;
-      count++;
+    console.log('Incoming /api/employees POST:', req.body);
+    // Validate associateId
+    if (!req.body.associateId) {
+      console.log('associateId missing');
+      return res.status(400).json({ error: 'associateId is required' });
     }
-    await User.create({ username, password: hashedPassword, role: 'Employee' });
+    // Build employee object
+    const empData = {
+      ...req.body,
+      associateId: Number(req.body.associateId),
+    };
+    console.log('Creating new Employee instance...');
+    const newEmp = new Employee(empData);
+    console.log('Saving new Employee to DB...');
+    await newEmp.save();
+    console.log('Employee saved:', newEmp);
+    // Also create a User credential for this employee
+    console.log('Hashing password for User credential...');
+    const passwordToSet = newEmp.role === 'Manager' || newEmp.role === 'Lead' ? 'Manager@2024' : 'Welcome@123';
+    const hashedPassword = await bcrypt.hash(passwordToSet, 10);
+    // Use associateId as the unique key for User
+    console.log('Creating User credential:', { associateId: newEmp.associateId, role: 'Employee' });
+    await User.create({ username: newEmp.name, associateId: newEmp.associateId, password: hashedPassword, role: newEmp.role });
+    console.log('User credential created');
     res.status(201).json(newEmp);
+    console.log('Response sent to frontend');
   } catch (err) {
+    console.error('Error in /api/employees POST:', err);
     res.status(400).json({ error: err.message });
   }
 });
@@ -172,10 +188,12 @@ app.put('/api/employees/:name', async (req, res) => {
   }
 });
 
-app.delete('/api/employees/:name', async (req, res) => {
-  await Employee.deleteOne({ name: req.params.name });
-  // Also delete the credential for this employee
-  await User.deleteOne({ username: req.params.name });
+app.delete('/api/employees/:associateId', async (req, res) => {
+  const emp = await Employee.findOneAndDelete({ associateId: Number(req.params.associateId) });
+  if (emp) {
+    // Also delete the credential for this employee (by associateId)
+    await User.deleteOne({ associateId: emp.associateId });
+  }
   res.status(204).end();
 });
 

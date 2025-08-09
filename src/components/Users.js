@@ -1,3 +1,5 @@
+// NOTE: All user objects must include a unique associateId (Number).
+// All user operations (add, edit, delete) should use associateId as the unique key.
 import React, { useContext, useState } from "react";
 import { AppContext } from "../context/AppContext";
 import UserModal from "./UserModal";
@@ -7,10 +9,35 @@ const Users = () => {
   const { employees, addEmployee, editEmployee, deleteEmployee, loading } = useContext(AppContext);
 
   // Modified add handler to always add a new user, even if details match an existing one
-  const handleAddUser = (user) => {
-    addEmployee({ ...user, _id: Math.random().toString(36).slice(2) }); // force unique _id
-    setModalOpen(false);
-    setSnackbar({ open: true, message: 'User added successfully!', severity: 'success' });
+  const handleAddUser = async (user) => {
+    // Validate associateId
+    if (!user.associateId || isNaN(Number(user.associateId))) {
+      setSnackbar({ open: true, message: 'Associate ID must be a unique number.', severity: 'error' });
+      return;
+    }
+    // Check for duplicate associateId in current employees
+    if (employees.some(emp => String(emp.associateId) === String(user.associateId))) {
+      setSnackbar({ open: true, message: 'Associate ID already exists.', severity: 'error' });
+      return;
+    }
+    const newUser = {
+      ...user,
+      associateId: Number(user.associateId),
+      role: user.role || 'Employee',
+      password: 'Welcome@123',
+    };
+    try {
+      const result = await addEmployee(newUser);
+      // If backend returns error, show it
+      if (result && result.error) {
+        setSnackbar({ open: true, message: result.error, severity: 'error' });
+        return;
+      }
+      setModalOpen(false);
+      setSnackbar({ open: true, message: 'User added successfully!', severity: 'success' });
+    } catch (err) {
+      setSnackbar({ open: true, message: (err && err.message) || 'Failed to add user. Please check input and try again.', severity: 'error' });
+    }
   }
 
   // Fix: Define handleEditUser
@@ -95,7 +122,7 @@ const Users = () => {
                   fontSize: 16
                 }}
               >
-                <TableCell sx={{ fontWeight: 700, fontSize: 18, color: '#4b2aad', border: 0, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif' }}>{emp.associateId || '-'}</TableCell>
+                <TableCell sx={{ fontWeight: 700, fontSize: 18, color: '#4b2aad', border: 0, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif' }}>{emp.associateId && typeof emp.associateId === 'object' && emp.associateId.$numberLong ? emp.associateId.$numberLong : emp.associateId || '-'}</TableCell>
                 <TableCell sx={{ fontWeight: 700, fontSize: 18, color: '#4b2aad', border: 0, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif' }}>{emp.name}</TableCell>
                 <TableCell sx={{ fontWeight: 500, fontSize: 17, color: '#6a479c', border: 0, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif' }}>{emp.location}</TableCell>
                 <TableCell sx={{ fontWeight: 600, fontSize: 17, color: '#7c4dff', border: 0, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif' }}>{emp.team}</TableCell>
@@ -126,7 +153,7 @@ const Users = () => {
               boxShadow: '0 2px 12px 0 rgba(124,77,255,0.18)'
             }
           }}
-          onClick={() => { setEditUser(null); setModalOpen(true); }}
+          onClick={() => { setEditUser(null); setModalOpen(false); setTimeout(() => setModalOpen(true), 0); }}
         >
           Add User
         </Button>
@@ -224,7 +251,7 @@ const Users = () => {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={editUser ? handleEditUser : handleAddUser}
-        initial={editUser}
+        initial={editUser || undefined}
       />
       <Dialog open={!!deleteUser} onClose={() => setDeleteUser(null)} PaperProps={{
         style: {
@@ -266,7 +293,7 @@ const Users = () => {
         </div>
         <DialogActions style={{ justifyContent: 'center', gap: 24, padding: '0 28px 32px 28px', marginTop: 8 }}>
           <Button onClick={async () => {
-            await deleteEmployee(deleteUser.name);
+            await deleteEmployee(deleteUser.associateId);
             setDeleteUser(null);
             handleSnackbar('User deleted successfully!');
           }}

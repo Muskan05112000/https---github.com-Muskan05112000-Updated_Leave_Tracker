@@ -52,11 +52,11 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const deleteEmployee = async (name) => {
-    const res = await fetch(`${API_BASE}/employees/${encodeURIComponent(name)}`, {
+  const deleteEmployee = async (associateId) => {
+    const res = await fetch(`${API_BASE}/employees/${encodeURIComponent(associateId)}`, {
       method: "DELETE" });
     if (res.ok || res.status === 204) {
-      setEmployees((prev) => prev.filter(emp => emp.name !== name));
+      setEmployees((prev) => prev.filter(emp => String(emp.associateId) !== String(associateId)));
     }
   };
 

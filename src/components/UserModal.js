@@ -9,12 +9,20 @@ function UserModal({ open, onClose, onSubmit, initial }) {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setName(initial?.name || "");
-    setLocation(initial?.location || "");
-    setTeam(initial?.team || "");
-    setAssociateId(initial?.associateId || "");
-    setError("");
-  }, [initial]);
+    if (open && !initial) {
+      setName("");
+      setLocation("");
+      setTeam("");
+      setAssociateId("");
+      setError("");
+    } else if (initial) {
+      setName(initial.name || "");
+      setLocation(initial.location || "");
+      setTeam(initial.team || "");
+      setAssociateId(initial.associateId || "");
+      setError("");
+    }
+  }, [open, initial]);
 
   const handleSubmit = () => {
     if (!name.trim() || !location.trim() || !team.trim() || !associateId) {
@@ -26,6 +34,8 @@ function UserModal({ open, onClose, onSubmit, initial }) {
       return;
     }
     setError("");
+    // Debug log
+    console.log("Submitting user:", { name, location, team, associateId: Number(associateId) });
     onSubmit({ name, location, team, associateId: Number(associateId) });
   };
 
@@ -75,20 +85,7 @@ function UserModal({ open, onClose, onSubmit, initial }) {
           }}>{error}</div>
         )}
         <Box sx={{ minWidth: 250, mt: 1 }}>
-          <TextField label="Associate ID" value={associateId} onChange={e => setAssociateId(e.target.value.replace(/[^0-9]/g, ''))} fullWidth variant="outlined" sx={{ mb: 3, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
-            '& .MuiOutlinedInput-root': {
-              borderRadius: 16,
-              background: 'rgba(255,255,255,0.42)',
-              boxShadow: '0 2px 12px 0 rgba(124,77,255,0.09) inset',
-              border: 'none',
-              fontWeight: 700,
-              fontSize: 17,
-              transition: 'background 0.18s, box-shadow 0.18s',
-              '&:hover': { background: 'rgba(255,255,255,0.60)' },
-              '&.Mui-focused': { background: 'rgba(255,255,255,0.72)', boxShadow: '0 0 0 2px #b388ff44' }
-            },
-            '& .MuiInputLabel-root': { fontWeight: 700, color: '#7c4dff' }
-          }} inputProps={{ inputMode: 'numeric', pattern: '[0-9]*', maxLength: 20 }} InputLabelProps={{ shrink: true }} />
+          
           <TextField label="Name" value={name} onChange={e => setName(e.target.value)} fullWidth variant="outlined" sx={{ mb: 3, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
             '& .MuiOutlinedInput-root': {
               borderRadius: 16,
@@ -103,6 +100,28 @@ function UserModal({ open, onClose, onSubmit, initial }) {
             },
             '& .MuiInputLabel-root': { fontWeight: 700, color: '#7c4dff' }
           }} InputLabelProps={{ shrink: true }} />
+          <TextField
+            label="Associate ID"
+            value={associateId}
+            onChange={e => setAssociateId(e.target.value)}
+            fullWidth
+            required
+            type="number"
+            variant="outlined"
+            sx={{ mb: 3, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
+              '& .MuiOutlinedInput-root': {
+                borderRadius: 16,
+                background: 'rgba(255,255,255,0.42)',
+                boxShadow: '0 2px 12px 0 rgba(124,77,255,0.09) inset',
+                border: 'none',
+                fontWeight: 700,
+                fontSize: 17,
+                transition: 'box-shadow 0.2s'
+              },
+              '& .MuiInputLabel-root': { fontWeight: 700, color: '#7c4dff' }
+            }}
+            InputLabelProps={{ shrink: true }}
+          />
           <TextField label="Location" value={location} onChange={e => setLocation(e.target.value)} fullWidth variant="outlined" sx={{ mb: 3, fontFamily: 'Poppins, Inter, Segoe UI, Arial, sans-serif',
             '& .MuiOutlinedInput-root': {
               borderRadius: 16,
@@ -111,9 +130,7 @@ function UserModal({ open, onClose, onSubmit, initial }) {
               border: 'none',
               fontWeight: 700,
               fontSize: 17,
-              transition: 'background 0.18s, box-shadow 0.18s',
-              '&:hover': { background: 'rgba(255,255,255,0.60)' },
-              '&.Mui-focused': { background: 'rgba(255,255,255,0.72)', boxShadow: '0 0 0 2px #b388ff44' }
+              transition: 'box-shadow 0.2s'
             },
             '& .MuiInputLabel-root': { fontWeight: 700, color: '#7c4dff' }
           }} InputLabelProps={{ shrink: true }} />
