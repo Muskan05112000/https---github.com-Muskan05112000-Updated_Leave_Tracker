@@ -44,7 +44,7 @@ steps:
 - task: ArchiveFiles@2
   inputs:
     rootFolderOrFile: '$(backendPath)'
-    includeRootFolder: true  # includeRootFolder: true ensures backend folder contents become root of zip
+    includeRootFolder: false  # backend contents become root of zip
     archiveType: 'zip'
     archiveFile: '$(Build.ArtifactStagingDirectory)/app.zip'
     replaceExistingArchive: true
