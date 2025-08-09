@@ -12,8 +12,7 @@ export function AuthProvider({ children }) {
     setLoading(true);
     setError(null);
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'https://cts-vibeappso3801-5.azurewebsites.net/api';
-      const res = await fetch(`${apiUrl}/login`, {
+      const res = await fetch('http://localhost:4000/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username, password })
