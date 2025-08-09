@@ -2,6 +2,17 @@ import React from "react";
 import { Dialog, DialogTitle, DialogContent, DialogActions, Button, TextField } from "@mui/material";
 
 export default function SendMailDialog({ open, onClose, onSend, mailTo, setMailTo, mailAppPassword, setMailAppPassword, mailError, mailAppPasswordError }) {
+  const API_BASE = window.API_BASE || "https://cts-vibeappso3801-5.azurewebsites.net/api";
+
+  const fetchSendLeaveEmail = () => {
+    fetch(API_BASE + '/send-leave-email', {
+      // Add your fetch options here
+    })
+    .then(response => response.json())
+    .then(data => console.log(data))
+    .catch(error => console.error(error));
+  };
+
   return (
     <Dialog
       open={open}

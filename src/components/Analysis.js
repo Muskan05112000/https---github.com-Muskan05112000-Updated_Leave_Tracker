@@ -60,7 +60,7 @@ const Analysis = () => {
       weekStart: weekStart.toISOString()
     };
     console.log('Send Mail Payload:', payload);
-    fetch('http://localhost:4000/api/send-leave-email', {
+    fetch((window.API_BASE || "https://cts-vibeappso3801-5.azurewebsites.net/api") + '/send-leave-email', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -106,7 +106,7 @@ const Analysis = () => {
       weekStart: weekStart.toISOString(),
       weekDays: weekDays.map(d => d.toISOString())
     };
-    const response = await fetch('http://localhost:4000/api/download-leave-excel', {
+    const response = await fetch((window.API_BASE || "https://cts-vibeappso3801-5.azurewebsites.net/api") + '/download-leave-excel', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
