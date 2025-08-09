@@ -24,6 +24,12 @@ steps:
   displayName: 'Install & Build Frontend'
 
 - script: |
+    cd $(frontendPath)
+    npm test -- --passWithNoTests
+  displayName: 'Run Frontend Tests (Ignore if None)'
+  continueOnError: true
+
+- script: |
     cd $(backendPath)
     npm install
   displayName: 'Install Backend Dependencies'
